@@ -7,12 +7,13 @@
   };
 
   inputs = {
-    # nixpkgs-unstable 11-6-2022
+    # nixpkgs-unstable Nov 6 2022
     nixpkgs.url = github:nixos/nixpkgs?rev=8993cc730d11148ef59e84a8f15f94f688e1bfd1;
-    master.url = github:nixos/nixpkgs;
+    # nixpkgs Nov 12 2022
+    master.url = github:nixos/nixpkgs?rev=e2bb1e774b5f458de166169d2f6cede6aff9d289;
     nixos_21-11.url = github:nixos/nixpkgs?rev=eabc38219184cc3e04a974fe31857d8e0eac098d;
     nixos_22-05.url = github:nixos/nixpkgs?rev=f09ad462c5a121d0239fde645aacb2221553a217;
-    utils.url = github:gytis-ivaskevicius/flake-utils-plus;
+    utils.url = github:gytis-ivaskevicius/flake-utils-plus?rev=2bf0f91643c2e5ae38c1b26893ac2927ac9bd82a;
   };
 
   outputs = inputs@{ self, utils, ... }:
