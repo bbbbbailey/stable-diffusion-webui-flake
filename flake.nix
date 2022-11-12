@@ -1,6 +1,11 @@
 {
   description = "Nix Flake that packages stable-diffusion-webui";
 
+  nixConfig = {
+    extra-trusted-substituters = "https://stable-diffusion-webui.cachix.org";
+    extra-trusted-public-keys = "stable-diffusion-webui.cachix.org-1:qk3UxlObFfZj/kR6y7f1lecSqYOAG3gGQUXu7jgJsqc=";
+  };
+
   inputs = {
     # nixpkgs-unstable 11-6-2022
     nixpkgs.url = github:nixos/nixpkgs?rev=8993cc730d11148ef59e84a8f15f94f688e1bfd1;
