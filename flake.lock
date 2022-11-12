@@ -17,16 +17,17 @@
     },
     "master": {
       "locked": {
-        "lastModified": 1667874156,
-        "narHash": "sha256-PyqOJM8aVZYAY6HIVyX/r6pgMkl9FTmB6j0rEQm3gS0=",
+        "lastModified": 1668281383,
+        "narHash": "sha256-OCgP+YGLmGus4Uh1glwLhiMuvm/dQbbUQCE721V9Wv0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "27527ba4abcc6a99e756d4401f1179e8225238b7",
+        "rev": "e2bb1e774b5f458de166169d2f6cede6aff9d289",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
         "repo": "nixpkgs",
+        "rev": "e2bb1e774b5f458de166169d2f6cede6aff9d289",
         "type": "github"
       }
     },
@@ -102,6 +103,7 @@
       "original": {
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
+        "rev": "2bf0f91643c2e5ae38c1b26893ac2927ac9bd82a",
         "type": "github"
       }
     }

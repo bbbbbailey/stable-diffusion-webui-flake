@@ -1,5 +1,5 @@
 {
-  description = "Nix Flake that packages stable-diffusion-webui";
+  description = "Flake that packages stable-diffusion-webui";
 
   nixConfig = {
     extra-trusted-substituters = "https://stable-diffusion-webui.cachix.org";
@@ -15,10 +15,9 @@
     utils.url = github:gytis-ivaskevicius/flake-utils-plus;
   };
 
-
-  outputs = inputs@{ self, nixpkgs, nixos_21-11, utils, ... }:
+  outputs = inputs@{ self, utils, ... }:
     let
-      mkApp = utils.lib.mkApp;
+      inherit (utils.lib) mkApp;
     in
     utils.lib.mkFlake {
       inherit self inputs;
@@ -28,22 +27,40 @@
         cudaSupport = true;
       };
 
-      channels.nixpkgs.overlaysBuilder = channels: [
-        (final: prev: {
-          python310 =
-            let
-              self = prev.python310.override {
-                inherit self;
-                packageOverrides = import ./python.nix inputs;
-              };
-            in
-            self;
+      channels.nixpkgs.overlaysBuilder = _: [
+        (_: prev: prev.lib.genAttrs [ "python" "python3" "python38" "python39" "python310" "python311" ] (py:
+          let
+            self = prev.${py}.override {
+              inherit self;
+              packageOverrides = import ./python.nix inputs;
+            };
+          in
+          self))
+        (final: _: {
+          stable-diffusion-webui = final.callPackage ./pkgs/stable-diffusion-webui.nix { python = final.python310; };
         })
       ];
 
-      outputsBuilder = channels: rec {
-        defaultPackage = channels.nixpkgs.callPackage ./pkgs/stable-diffusion-webui.nix { python = channels.nixpkgs.python310; };
-        defaultApp = defaultPackage;
+      outputsBuilder = channels: {
+        packages = {
+          default = channels.nixpkgs.stable-diffusion-webui;
+        };
+        apps = rec {
+          stable-diffusion-webui = mkApp { drv = channels.nixpkgs.stable-diffusion-webui; };
+          cachix-push-all = mkApp {
+            drv = channels.nixpkgs.writeShellApplication {
+              name = "cachix-push-all";
+              runtimeInputs = with channels.nixpkgs; [ jq cachix nix ];
+              text = ''
+                nix build --json \
+                  | jq -r '.[].outputs | to_entries[].value' \
+                  | cachix push stable-diffusion-webui
+              '';
+            };
+          };
+          default = stable-diffusion-webui;
+        };
+        formatter = channels.nixpkgs.nixpkgs-fmt;
       };
     };
 }
