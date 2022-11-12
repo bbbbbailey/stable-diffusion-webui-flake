@@ -15,6 +15,10 @@
 , torchvision
 , tqdm
 , yapf
+, regex
+, huggingface-hub
+, importlib-metadata
+, basicsr
 , ...
 }:
 buildPythonPackage rec {
@@ -22,16 +26,18 @@ buildPythonPackage rec {
   version = "0.7.1";
   src = fetchPypi {
     inherit pname version;
-    sha256 = "";
+    hash = "sha256-Jdbd96iC2gButSJYVGEDTgH+SNiH9yZKzgAbgDMEkYU=";
   };
   propagatedBuildInputs = [
     addict
+    basicsr
     future
     lmdb
     numpy
     opencv4
     pillow
     pyyaml
+    regex
     requests
     scikitimage
     scipy
@@ -40,6 +46,8 @@ buildPythonPackage rec {
     torchvision
     tqdm
     yapf
+    importlib-metadata
+    huggingface-hub
   ];
   pythonImportsCheck = [ "basicsr" ];
 }

@@ -2,17 +2,26 @@
   description = "Nix Flake that packages stable-diffusion-webui";
 
   inputs = {
-    nixpkgs.url = github:nixos/nixpkgs/release-22.05;
-    unstable.url = github:nixos/nixpkgs/nixos-unstable;
+    # nixpkgs-unstable 11-6-2022
+    nixpkgs.url = github:nixos/nixpkgs?rev=8993cc730d11148ef59e84a8f15f94f688e1bfd1;
+    master.url = github:nixos/nixpkgs;
+    nixos_21-11.url = github:nixos/nixpkgs?rev=eabc38219184cc3e04a974fe31857d8e0eac098d;
+    nixos_22-05.url = github:nixos/nixpkgs?rev=f09ad462c5a121d0239fde645aacb2221553a217;
     utils.url = github:gytis-ivaskevicius/flake-utils-plus;
   };
 
 
-  outputs = inputs@{ self, nixpkgs, unstable, utils }:
+  outputs = inputs@{ self, nixpkgs, nixos_21-11, utils, ... }:
+    let
+      mkApp = utils.lib.mkApp;
+    in
     utils.lib.mkFlake {
       inherit self inputs;
 
-      channelsConfig.allowUnfree = true;
+      channelsConfig = {
+        allowUnfree = true;
+        cudaSupport = true;
+      };
 
       channels.nixpkgs.overlaysBuilder = channels: [
         (final: prev: {
@@ -20,50 +29,16 @@
             let
               self = prev.python310.override {
                 inherit self;
-                packageOverrides = import ./python.nix;
+                packageOverrides = import ./python.nix inputs;
               };
             in
             self;
         })
       ];
 
-      outputsBuilder = channels: {
-        devShell = channels.nixpkgs.mkShell {
-          name = "stable-diffusion-webui";
-          buildInputs = with channels.nixpkgs; [
-            (python310.withPackages (pyPkgs: with pyPkgs; [
-              basicsr #
-              diffusers #
-              fairscale #
-              fonts #
-              font-roboto #
-              gfpgan #
-              gradio #
-              invisible-watermark #
-              numpy
-              omegaconf
-              opencv4
-              requests
-              piexif
-              pillow
-              pytorch_lightning #
-              realesrgan #
-              scikitimage
-              timm #
-              transformers
-              pytorch
-              einops
-              jsonmerge
-              clean-fid #
-              resize-right #
-              torchdiffeq #
-              kornia #
-              lark
-              inflection
-              GitPython
-            ]))
-          ];
-        };
+      outputsBuilder = channels: rec {
+        defaultPackage = channels.nixpkgs.callPackage ./pkgs/stable-diffusion-webui.nix { python = channels.nixpkgs.python310; };
+        defaultApp = defaultPackage;
       };
     };
 }

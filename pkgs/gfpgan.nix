@@ -1,43 +1,33 @@
 { buildPythonPackage
 , fetchPypi
-, addict
-, future
+, basicsr
+, facexlib
 , lmdb
 , numpy
 , opencv4
-, pillow
 , pyyaml
-, requests
-, scikitimage
 , scipy
 , pytorch
 , tensorboard
 , torchvision
 , tqdm
 , yapf
-, cython
-, pytest
 , ...
 }:
 buildPythonPackage rec {
-  pname = "basicsr";
-  version = "1.4.2";
+  pname = "gfpgan";
+  version = "1.3.8";
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-uJtZWofvlkzamRO02ZOA3bZVTJZVd8DBDLe3jjEwHoc=";
+    hash = "sha256-IWGLBs6OpiMESMtSawEgBPI6mrlWtVyDP2m5/IpgxPk=";
   };
-  nativeBuildInputs = [ cython ];
-  checkInputs = [ pytest ];
   propagatedBuildInputs = [
-    addict
-    future
+    basicsr
+    facexlib
     lmdb
     numpy
     opencv4
-    pillow
     pyyaml
-    requests
-    scikitimage
     scipy
     tensorboard
     pytorch
@@ -45,9 +35,9 @@ buildPythonPackage rec {
     tqdm
     yapf
   ];
-  pythonImportsCheck = [ "basicsr" ];
-  doCheck = false;
+  pythonImportsCheck = [ "gfpgan" ];
   postPatch = ''
     substituteInPlace requirements.txt --replace "tb-nightly" "tensorboard" --replace "opencv-python" "opencv"
   '';
+  doCheck = false;
 }
