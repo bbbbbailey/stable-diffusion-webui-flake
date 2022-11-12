@@ -58,7 +58,8 @@ writeShellApplication {
   runtimeInputs = [ cudatoolkit ];
   text = ''
     export CUDA_PATH=${cudatoolkit}
-    export COMMANDLINE_ARGS=--skip-torch-cuda-test
+    export COMMANDLINE_ARGS="--precision full --no-half --no-half-vae"
+    export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:256
     export PYTHONPATH=${env.sitePackages}:${src}
     export SD_REPO_PATH=${sdSrc}
     export SD_STATE_DIR=~/.sdwebui
